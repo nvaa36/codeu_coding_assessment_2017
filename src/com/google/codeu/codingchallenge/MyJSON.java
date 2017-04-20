@@ -21,21 +21,24 @@ import java.util.Map;
 
 final class MyJSON implements JSON {
 
-   private HashMap<String, JSON> map;
+   private HashMap<String, Object> map;
    private String string;
 
    public MyJSON () {
-      map = new HashMap<String, JSON>();
+      map = new HashMap<String, Object>();
    }
 
    public MyJSON (String str) {
-      map = new HashMap<String, JSON>();
+      map = new HashMap<String, Object>();
       string = str;
    }
 
   @Override
   public JSON getObject(String name) {
-    return map.get(name);
+   Object value = map.get(name);
+   if (value instanceof JSON)
+    return (JSON)value;
+   return null;
   }
 
   @Override
@@ -46,30 +49,33 @@ final class MyJSON implements JSON {
 
   @Override
   public String getString(String name) {
-   if (string != null)
-      return string;
-   JSON json = map.get(name);
-    if (json != null)
-      return json.getStr();
+   Object value = map.get(name);
+   if (value instanceof String)
+    return (String)value;
    return null;
   }
 
   @Override
   public JSON setString(String name, String value) {
-    map.add(name, new MyJSON(value));
+    map.put(name, value);
     return this;
   }
 
   @Override
   public void getObjects(Collection<String> names) {
-    Set<String, JSON> set = map.entrySet();
-    for (Map.Entry<String, JSON> entry : set) {
-      if ()
+    Set<Map.Entry<String, Object>> set = map.entrySet();
+    for (Map.Entry<String, Object> entry : set) {
+      if (entry.getValue() instanceof JSON)
+         names.add(entry.getKey());
     }
   }
 
   @Override
   public void getStrings(Collection<String> names) {
-    // TODO: implement this
+    Set<Map.Entry<String, Object>> set = map.entrySet();
+    for (Map.Entry<String, Object> entry : set) {
+      if (entry.getValue() instanceof String)
+         names.add(entry.getKey());
+    }
   }
 }

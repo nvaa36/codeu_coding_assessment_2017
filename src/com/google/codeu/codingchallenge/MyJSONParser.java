@@ -15,12 +15,55 @@
 package com.google.codeu.codingchallenge;
 
 import java.io.IOException;
+import java.lang.StringBuilder;
+import java.util.Collection;
+import java.util.ArrayList;
 
 final class MyJSONParser implements JSONParser {
 
   @Override
   public JSON parse(String in) throws IOException {
-    // TODO: implement this
-    return new MyJSON();
+    MyJSON json = null;
+    char current;
+    boolean inStr = false;
+    boolean isName = true;
+    StringBuilder string = new StringBuilder();
+    String name = "";
+    for (int i = 0; i < in.length(); i++) {
+      current = in.charAt(i);
+      if (current == '{') {
+         if (json == null)
+            json = new MyJSON();
+         else {
+            json.setObject(name.toString(), parse(in.substring(i, in.lastIndexOf('}') + 1)));
+            i = in.lastIndexOf('}') - 1;
+         }
+      }
+      else if (current == '\"') {
+         if (inStr) {
+            if (isName) {
+               name = string.toString();
+            }
+            else {
+               json.setString(name, string.toString());
+            }
+            string = new StringBuilder();
+         }
+         inStr = !inStr;
+      }
+      else if (current == ':' || current == ',') {
+         isName = !isName;
+      }
+      else if (current == '}') {
+         Collection<String> col = new ArrayList<String>();
+         json.getStrings(col);
+         return json;
+      }
+      else {
+         if (inStr)
+            string.append(current);
+      }
+    }
+    return json;
   }
 }
