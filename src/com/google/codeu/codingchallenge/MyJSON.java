@@ -15,36 +15,57 @@
 package com.google.codeu.codingchallenge;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.Map;
 
 final class MyJSON implements JSON {
 
+   private HashMap<String, JSON> map;
+   private String string;
+
+   public MyJSON () {
+      map = new HashMap<String, JSON>();
+   }
+
+   public MyJSON (String str) {
+      map = new HashMap<String, JSON>();
+      string = str;
+   }
+
   @Override
   public JSON getObject(String name) {
-    // TODO: implement this
-    return null;
+    return map.get(name);
   }
 
   @Override
   public JSON setObject(String name, JSON value) {
-    // TODO: implement this
+    map.put(name, value);
     return this;
   }
 
   @Override
   public String getString(String name) {
-    // TODO: implement this
-    return null;
+   if (string != null)
+      return string;
+   JSON json = map.get(name);
+    if (json != null)
+      return json.getStr();
+   return null;
   }
 
   @Override
   public JSON setString(String name, String value) {
-    // TODO: implement this
+    map.add(name, new MyJSON(value));
     return this;
   }
 
   @Override
   public void getObjects(Collection<String> names) {
-    // TODO: implement this
+    Set<String, JSON> set = map.entrySet();
+    for (Map.Entry<String, JSON> entry : set) {
+      if ()
+    }
   }
 
   @Override
